@@ -1,0 +1,40 @@
+{
+  "name": "reduxtemplate",
+  "version": "1.0.0",
+  "scripts": {
+    "server:lint": "./node_modules/.bin/tslint --project ./src/tsconfig.json --config ./src/tslint.json 'src/server/**/*.ts?(x)'",
+    "server:test": "./node_modules/.bin/cross-env NODE_ENV=test ./node_modules/.bin/jest --config ./test/server.json --no-cache",
+    "server:test:watch": "./node_modules/.bin/cross-env NODE_ENV=test ./node_modules/.bin/jest --config ./test/server.json --watchAll",
+    "server:dist": "./node_modules/.bin/cross-env NODE_ENV=prod ./node_modules/.bin/webpack --config ./webpack/server.js",
+    "prestart": "rm -rf dist",
+    "start": "./node_modules/.bin/cross-env NODE_ENV=dev ./node_modules/.bin/webpack --config ./webpack/server.js --watch"
+  },
+  "dependencies": {
+    "cross-env": "^5.1.1",
+    "express": "^4.16.2",
+    "express-winston": "^2.4.0",
+    "isomorphic-fetch": "^2.2.1",
+    "source-map-support": "^0.5.0",
+    "winston": "^2.4.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.0.39",
+    "@types/isomorphic-fetch": "^0.0.34",
+    "@types/jest": "^21.1.6",
+    "@types/source-map-support": "^0.4.0",
+    "@types/supertest": "^2.0.3",
+    "@types/winston": "^2.3.7",
+    "fork-ts-checker-webpack-plugin": "^0.2.8",
+    "happypack": "^4.0.0",
+    "jest": "^21.2.1",
+    "noop-webpack-plugin": "^1.0.1",
+    "supertest": "^3.0.0",
+    "ts-jest": "^21.2.1",
+    "ts-loader": "^3.1.1",
+    "tslint": "^5.8.0",
+    "typescript": "^2.6.1",
+    "webpack": "^3.8.1",
+    "webpack-node-externals": "^1.6.0",
+    "webpack-shell-plugin": "^0.5.0"
+  }
+}
