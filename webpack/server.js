@@ -6,6 +6,7 @@ const HappyPack = require('happypack');
 const nodeExternals = require('webpack-node-externals');
 const WebpackShellPlugin = require('webpack-shell-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const TypedocWebpackPlugin = require('typedoc-webpack-plugin');
 const noop = require('noop-webpack-plugin');
 
 const isDev = process.env.NODE_ENV === 'dev';
@@ -37,6 +38,16 @@ const config = {
         }),
         isDev ? new WebpackShellPlugin({onBuildEnd: ['node dist/server.bundle.js']}) : noop(),
         isDev ? new webpack.HotModuleReplacementPlugin() : noop(),
+        new TypedocWebpackPlugin({
+            out: '../docs/server',
+            module: 'commonjs',
+            target: 'es6',
+            exclude: '**/*.spec.*',
+            excludePrivate: true,
+            experimentalDecorators: true,
+            excludeExternals: true,
+            ignoreCompilerErrors: true
+        }, './src/server'),
         new HappyPack({
             id: 'tsx',
             threadPool: happyPackThreadPool,

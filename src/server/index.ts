@@ -1,10 +1,19 @@
 'use strict';
 
+/**
+ * Initializes express. When in dev mode, this configures the HMR accept handler to properly
+ * recycle the express listener.
+ */
+
 import * as http from 'http';
 import appServer from './appServer';
 import { Config } from './config/Config';
 import Logging from './Logging';
 
+/**
+ * The HTTP Server that express uses.
+ * @type {"http".Server}
+ */
 let server: http.Server = getServer();
 
 if (process.env.NODE_ENV === 'dev' && (module as any).hot) {
@@ -25,16 +34,26 @@ if (process.env.NODE_ENV === 'dev' && (module as any).hot) {
     onServerStart();
 }
 
-function onServerStart() {
+/**
+ * Called on initial start-up, but not during HMR cycles.
+ */
+function onServerStart(): void {
     Logging.defaultLogger.info('Starting Server');
     startListener();
 }
 
-function onServerHmr() {
+/**
+ * Called on HMR cycles, but not on initial startup.
+ */
+function onServerHmr(): void {
     Logging.defaultLogger.info('Starting Server HMR Load');
 }
 
-function getServer(): any {
+/**
+ * Pulls the server object from the HMR module's data param. This is how we pass state between HMR cycles.
+ * @returns {http.Server}
+ */
+function getServer(): http.Server {
     if (process.env.NODE_ENV === 'dev' && (module as any).hot) {
         if ((module as any).hot.data && (module as any).hot.data.server) {
             return (module as any).hot.data.server;
@@ -44,6 +63,9 @@ function getServer(): any {
     return;
 }
 
+/**
+ * Starts the HTTP listener
+ */
 function startListener(): void {
     server = http.createServer(appServer);
     server.listen(Config.serverPort);
