@@ -4,8 +4,6 @@
 const path = require('path');
 const webpack = require('webpack');
 const HappyPack = require('happypack');
-const nodeExternals = require('webpack-node-externals');
-const WebpackShellPlugin = require('webpack-shell-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const noop = require('noop-webpack-plugin');
 
@@ -14,11 +12,16 @@ const isTest = process.env.NODE_ENV === 'test';
 const happyPackThreadPool = HappyPack.ThreadPool({size: require('os').cpus().length - 1});
 
 const config = {
-    target: 'node',
+    target: 'web',
     devtool: isDev ? 'source-map' : 'nosources-source-map',
-    entry: isDev ? ['webpack/hot/poll?1000', './src/server/index.ts'] : ['./src/server/index.ts'],
-    externals: [nodeExternals({whitelist: [/^webpack\/hot/]})],
-    output: {filename: 'server.bundle.js', path: path.resolve(__dirname, '..', 'dist')},
+    entry: isDev ?
+        ['webpack-hot-middleware/client', 'react-hot-loader/patch', './src/client/index.tsx'] :
+        ['./src/client/index.tsx'],
+    output: {
+        filename: 'client.bundle.js',
+        publicPath: '/static/',
+        path: path.resolve(__dirname, '..', 'dist/static')
+    },
     resolve: {
         extensions: ['.ts', '.tsx', '.js', '.jsx']
     },
@@ -37,12 +40,14 @@ const config = {
             tsconfig: './src/tsconfig.json',
             tslint: './src/tslint.json'
         }),
-        isDev ? new WebpackShellPlugin({onBuildEnd: ['node dist/server.bundle.js']}) : noop(),
         isDev ? new webpack.HotModuleReplacementPlugin() : noop(),
+        new webpack.NoEmitOnErrorsPlugin(),
         new HappyPack({
             id: 'tsx',
             threadPool: happyPackThreadPool,
             loaders: [{
+                loader: 'react-hot-loader/webpack'
+            }, {
                 loader: 'ts-loader',
                 options: {
                     transpileOnly: true,

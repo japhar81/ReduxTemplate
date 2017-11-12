@@ -12,6 +12,8 @@
     "object-literal-sort-keys": false,
     "member-ordering": false,
     "no-submodule-imports": false,
-    "no-implicit-dependencies": false
+    "no-implicit-dependencies": false,
+    "no-empty-interface": false,
+    "no-object-literal-type-assertion": false
   }
 }

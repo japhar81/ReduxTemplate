@@ -1,19 +1,10 @@
 'use strict';
 
-/**
- * Initializes express. When in dev mode, this configures the HMR accept handler to properly
- * recycle the express listener.
- */
-
 import * as http from 'http';
 import appServer from './appServer';
 import { Config } from './config/Config';
 import Logging from './Logging';
 
-/**
- * The HTTP Server that express uses.
- * @type {"http".Server}
- */
 let server: http.Server = getServer();
 
 if (process.env.NODE_ENV === 'dev' && (module as any).hot) {
