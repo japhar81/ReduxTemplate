@@ -6,7 +6,6 @@ const webpack = require('webpack');
 const HappyPack = require('happypack');
 const nodeExternals = require('webpack-node-externals');
 const WebpackShellPlugin = require('webpack-shell-plugin');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const noop = require('noop-webpack-plugin');
 
 const isDev = process.env.NODE_ENV === 'dev';
@@ -27,16 +26,16 @@ const config = {
             {
                 test: /\.tsx?$/,
                 loaders: ['happypack/loader?id=tsx']
+            },
+            {
+                test: /\.mustache$/,
+                loader: 'mustache-loader?minify'
             }
         ]
     },
     plugins: [
         new webpack.NamedModulesPlugin(),
         new webpack.optimize.OccurrenceOrderPlugin(),
-        new ForkTsCheckerWebpackPlugin({
-            tsconfig: './src/tsconfig.json',
-            tslint: './src/tslint.json'
-        }),
         isDev ? new WebpackShellPlugin({onBuildEnd: ['node dist/server.bundle.js']}) : noop(),
         isDev ? new webpack.HotModuleReplacementPlugin() : noop(),
         new HappyPack({
@@ -45,7 +44,6 @@ const config = {
             loaders: [{
                 loader: 'ts-loader',
                 options: {
-                    transpileOnly: true,
                     happyPackMode: true,
                     configFile: 'src/tsconfig.json'
                 }

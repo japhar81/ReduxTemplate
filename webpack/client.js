@@ -4,7 +4,6 @@
 const path = require('path');
 const webpack = require('webpack');
 const HappyPack = require('happypack');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const noop = require('noop-webpack-plugin');
 
 const isDev = process.env.NODE_ENV === 'dev';
@@ -36,10 +35,6 @@ const config = {
     plugins: [
         new webpack.NamedModulesPlugin(),
         new webpack.optimize.OccurrenceOrderPlugin(),
-        new ForkTsCheckerWebpackPlugin({
-            tsconfig: './src/tsconfig.json',
-            tslint: './src/tslint.json'
-        }),
         isDev ? new webpack.HotModuleReplacementPlugin() : noop(),
         new webpack.NoEmitOnErrorsPlugin(),
         new HappyPack({
@@ -50,7 +45,6 @@ const config = {
             }, {
                 loader: 'ts-loader',
                 options: {
-                    transpileOnly: true,
                     happyPackMode: true,
                     configFile: 'src/tsconfig.json'
                 }

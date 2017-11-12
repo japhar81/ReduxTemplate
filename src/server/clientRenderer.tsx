@@ -6,8 +6,11 @@ import * as webpackDevMiddleware from 'webpack-dev-middleware';
 import * as webpackHotMiddleware from 'webpack-hot-middleware';
 import * as webpackConfig from '../../webpack/client';
 
+import * as Mustache from 'mustache';
 import * as React from 'react';
 import Logging from './Logging';
+
+import clientIndexTemplate = require('./clientIndex.mustache');
 
 const clientRouter: express.Router = express.Router();
 
@@ -22,35 +25,16 @@ function renderClient(req: express.Request, res: express.Response, next: express
 
 /* istanbul ignore next */
 function renderFullPage(html: string, preloadedState: any) {
-    const embedStyles = process.env.NODE_ENV === 'dev' ?
-        /* istanbul ignore next */ '' :
-        `<link rel='stylesheet' type='text/css' href='/static/styles.bundle.css'>`;
-
-    return `
-    <!doctype html>
-    <html lang='en'>
-    <head>
-        <meta charset='utf-8'>
-        <meta name='viewport' content='width=device-width, initial-scale=1'>
-        <title>SecureWorks CloudGuardian SCM</title>
-        ${embedStyles}
-    </head>
-    <body class='skin-black-light fixed'>
-    <div id='root'>${html}</div>
-    <div id='devTools'></div>
-    <script>
-          window.__PRELOADED_STATE__ = ${JSON.stringify(preloadedState).replace(/</g, '\\x3c')}
-        </script>
-        <script src='/static/client.bundle.js'></script>
-    </body>
-    </html>
-    `;
+    return Mustache.render(clientIndexTemplate(), {
+        title: 'ReduxTemplate',
+        html
+    });
 }
 
 /* istanbul ignore if */
 if (process.env.NODE_ENV === 'dev') {
     const compiler = (module as any).hot.data && (module as any).hot.data.compiler ?
-        (module as any).hot.data.compiler : webpack(webpackConfig as any);
+        (module as any).hot.data.compiler : webpack(webpackConfig as webpack.Configuration);
     const devmiddleware = (module as any).hot.data && (module as any).hot.data.devmiddleware ?
         (module as any).hot.data.devmiddleware :
         webpackDevMiddleware(compiler, {
