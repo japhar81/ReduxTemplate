@@ -1,7 +1,7 @@
 'use strict';
 
 import { combineReducers } from 'redux';
-import { IState } from '../state';
+import { IAppState } from '../state';
 import { Action, IIncrementCounterAction } from '../actions';
 
 const initialState = {value: 0};
@@ -18,6 +18,6 @@ function counterReducer(state = initialState, action: Action) {
 }
 
 // Global reducer definition - maps reducers to pieces of state
-export const reducers = combineReducers<IState>({
+export default combineReducers<IAppState>({
     counter: counterReducer
 });

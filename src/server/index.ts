@@ -3,7 +3,7 @@
 import * as http from 'http';
 import appServer from './appServer';
 import { Config } from './config/Config';
-import Logging from './Logging';
+import Logging from "./Logging";
 
 let server: http.Server = getServer();
 

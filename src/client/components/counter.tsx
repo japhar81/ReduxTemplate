@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { ICounter, IState } from '../state';
+import { ICounter, IAppState } from '../state';
 import { Action, incrementCounter, resetCounter } from '../actions';
 
 interface ICounterProps {
@@ -54,7 +54,7 @@ class Counter extends React.Component<ICounterProps & ICounterOwnProps, ICounter
     }
 }
 
-function mapStateToProps(state: IState) {
+function mapStateToProps(state: IAppState) {
     return {
         counter: state.counter
     };

@@ -1,6 +1,6 @@
 'use strict';
 
-export interface IState {
+export interface IAppState {
     counter: ICounter;
 }
 

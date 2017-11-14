@@ -7,6 +7,7 @@ const HappyPack = require('happypack');
 const nodeExternals = require('webpack-node-externals');
 const WebpackShellPlugin = require('webpack-shell-plugin');
 const noop = require('noop-webpack-plugin');
+const staticLoaders = require('./staticLoaders');
 
 const isDev = process.env.NODE_ENV === 'dev';
 const isTest = process.env.NODE_ENV === 'test';
@@ -24,13 +25,23 @@ const config = {
     module: {
         loaders: [
             {
+                enforce: 'pre',
+                test: /\.tsx?$/,
+                loaders: ['happypack/loader?id=tslint'],
+                exclude: /(node_modules)/
+            },
+            {
                 test: /\.tsx?$/,
                 loaders: ['happypack/loader?id=tsx']
             },
             {
                 test: /\.mustache$/,
                 loader: 'mustache-loader?minify'
-            }
+            },
+            {test: /\.css$/, use: ['css-loader']},
+            {test: /\.scss$/, use: ['sass-loader']},
+            {test: /\.less$/, use: ['css-loader', 'less-loader']},
+            ...staticLoaders
         ]
     },
     plugins: [
@@ -38,6 +49,13 @@ const config = {
         new webpack.optimize.OccurrenceOrderPlugin(),
         isDev ? new WebpackShellPlugin({onBuildEnd: ['node dist/server.bundle.js']}) : noop(),
         isDev ? new webpack.HotModuleReplacementPlugin() : noop(),
+        new HappyPack({
+            id: 'tslint',
+            threadPool: happyPackThreadPool,
+            loaders: [{
+                loader: 'tslint-loader'
+            }]
+        }),
         new HappyPack({
             id: 'tsx',
             threadPool: happyPackThreadPool,
